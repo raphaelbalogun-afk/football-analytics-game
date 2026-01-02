@@ -46,65 +46,89 @@ export async function GET(request: Request) {
         })
       }
       
-      // Shuffle and pick 30 random players
-      const shuffled = [...allPlayersData].sort(() => 0.5 - Math.random())
-      const selectedPlayers = shuffled.slice(0, 30)
+      // Shuffle and pick 30 random players using deterministic method (no Math.random)
+      const shuffled = [...allPlayersData]
+      // Fisher-Yates shuffle with seed based on userId for consistency
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const seed = ((userId.charCodeAt(0) || 0) + i) % shuffled.length
+        const j = seed
+        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+      }
+      const selectedPlayers = shuffled.slice(0, Math.min(30, shuffled.length))
       
       // Generate holdings totaling approximately 6000 R Bucks
       const targetTotal = 6000
-      const totalShares = selectedPlayers.reduce((sum, p) => sum + Math.random() * 50 + 10, 0)
-      const scaleFactor = targetTotal / (selectedPlayers.reduce((sum, p) => sum + (p.current_price || p.base_price || 25) * (Math.random() * 50 + 10), 0))
-      
       const demoPortfolio = selectedPlayers.map((player, index) => {
-        const baseShares = Math.random() * 50 + 10
-        const shares = Math.floor(baseShares * scaleFactor * (0.8 + Math.random() * 0.4)) // Add some variation
+        // Use deterministic calculation based on player ID and index (no Math.random)
+        const seed = ((player.id?.charCodeAt(0) || 0) + index) % 1000
+        const randomFactor = ((seed * 9301 + 49297) % 233280) / 233280 // Simple PRNG
+        
+        // Calculate shares based on player price to distribute evenly
         const currentPrice = player.current_price || player.base_price || 25
         const basePrice = player.base_price || 25
-        const totalValue = currentPrice * shares
         
-        // Calculate price change
-        const priceChange = currentPrice - basePrice
-        const priceChangePercent = (priceChange / basePrice) * 100
+        // Target value per player (6000 / 30 = 200 per player on average)
+        const targetValuePerPlayer = targetTotal / selectedPlayers.length
+        const shares = Math.max(1, Math.floor(targetValuePerPlayer / currentPrice * (0.7 + randomFactor * 0.6)))
         
+        // Calculate price change (some players up, some down) - deterministic
+        const priceVariation = ((seed * 7919 + 12345) % 200) / 100 - 1 // -1% to +1%
+        const priceChange = basePrice * priceVariation
+        const adjustedCurrentPrice = Math.max(1, basePrice + priceChange)
+        const actualTotalValue = adjustedCurrentPrice * shares
+        const priceChangePercent = (basePrice > 0) ? (priceChange / basePrice) * 100 : 0
+
         // Calculate value change (assuming base price was buy price)
-        const valueChange = totalValue - (basePrice * shares)
-        const valueChangePercent = (valueChange / (basePrice * shares)) * 100
-        
+        const valueChange = actualTotalValue - (basePrice * shares)
+        const valueChangePercent = (basePrice * shares > 0) ? (valueChange / (basePrice * shares)) * 100 : 0
+
         return {
-          id: `demo-${index}`,
+          id: `demo-${player.id}-${index}`,
           player_id: player.id,
           user_id: userId,
           shares: shares,
-          player: player,
+          player: {
+            ...player,
+            current_price: adjustedCurrentPrice
+          },
           player_name: player.name,
           base_price: basePrice,
-          current_price: currentPrice,
-          total_value: totalValue,
+          current_price: adjustedCurrentPrice,
+          total_value: actualTotalValue,
           price_change: priceChange,
           price_change_percent: priceChangePercent,
           value_change: valueChange,
           value_change_percent: valueChangePercent
         }
       })
-      
+
       // Recalculate to ensure total is close to 6000
       const actualTotal = demoPortfolio.reduce((sum, item) => sum + item.total_value, 0)
       const finalScale = targetTotal / actualTotal
-      
-      const finalPortfolio = demoPortfolio.map(item => ({
-        ...item,
-        shares: Math.floor(item.shares * finalScale),
-        total_value: item.current_price * Math.floor(item.shares * finalScale),
-        value_change: (item.current_price * Math.floor(item.shares * finalScale)) - (item.base_price * Math.floor(item.shares * finalScale)),
-        value_change_percent: ((item.current_price - item.base_price) / item.base_price) * 100
-      }))
-      
+
+      const finalPortfolio = demoPortfolio.map(item => {
+        const adjustedShares = Math.max(1, Math.floor(item.shares * finalScale))
+        const adjustedTotalValue = item.current_price * adjustedShares
+        const adjustedValueChange = adjustedTotalValue - (item.base_price * adjustedShares)
+        const adjustedValueChangePercent = (item.base_price * adjustedShares > 0) 
+          ? (adjustedValueChange / (item.base_price * adjustedShares)) * 100 
+          : 0
+
+        return {
+          ...item,
+          shares: adjustedShares,
+          total_value: adjustedTotalValue,
+          value_change: adjustedValueChange,
+          value_change_percent: adjustedValueChangePercent
+        }
+      })
+
       const finalTotal = finalPortfolio.reduce((sum, item) => sum + item.total_value, 0)
       
       return NextResponse.json({
         success: true,
         portfolio: finalPortfolio,
-        total_value: finalTotal,
+        total_value: Math.round(finalTotal * 100) / 100, // Round to 2 decimal places
         virtual_balance: 10000
       })
     }
