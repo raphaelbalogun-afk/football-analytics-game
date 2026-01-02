@@ -8,6 +8,11 @@ import { getLeaguePlayers, getPlayersByTeam, getTeamPlayers, getTeams } from './
 import { transformApiPlayerToDB } from './player-transformer'
 import { createClient } from '@/lib/supabase/server'
 
+// Premier League Configuration
+// League: England - Premier League
+// Season: 2025 (Started 2025/08/15, ongoing)
+// API-Football V3 ID: 39
+// API-Football V2 ID: 7293
 const EPL_LEAGUE_ID = 39
 const CURRENT_SEASON = 2025
 
