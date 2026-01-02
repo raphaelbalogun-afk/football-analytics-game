@@ -113,21 +113,31 @@ export function transformApiPlayerToDB(
   price_floor: number
   total_shares: number
   available_shares: number
+  age?: number
+  nationality?: string
+  volatility_factor?: number
 } {
   const stats = apiPlayer.statistics?.[0]
   const position = mapPosition(stats?.games?.position || apiPlayer.player.position)
   const basePrice = calculateBasePrice(apiPlayer)
+  
+  // Add random variation to current price (within ±5%)
+  const variation = (Math.random() - 0.5) * 0.1 // -5% to +5%
+  const currentPrice = basePrice * (1 + variation)
   
   return {
     name: apiPlayer.player.name,
     team: teamName || stats?.team?.name || 'Unknown',
     position: position,
     base_price: Math.round(basePrice * 100) / 100,
-    current_price: Math.round(basePrice * 100) / 100,
+    current_price: Math.round(currentPrice * 100) / 100,
     price_cap: Math.round(basePrice * 2 * 100) / 100,
     price_floor: Math.round(basePrice * 0.5 * 100) / 100,
     total_shares: 1000,
-    available_shares: 1000
+    available_shares: 1000,
+    age: apiPlayer.player.age,
+    nationality: (apiPlayer.player as any).nationality || 'Unknown',
+    volatility_factor: 1.0 + Math.random() * 0.5 // 1.0 to 1.5
   }
 }
 
