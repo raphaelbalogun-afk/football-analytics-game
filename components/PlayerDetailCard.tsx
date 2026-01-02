@@ -210,7 +210,7 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '24px' }}>🪙</span>
               <span style={{ fontSize: '32px', fontWeight: '700', color: 'var(--text-primary, #333)' }}>
-                {currentPrice.toFixed(2)}
+                {adjustedCurrentPrice.toFixed(2)}
               </span>
             </div>
           </div>
@@ -227,11 +227,15 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
             <div
               style={{
                 fontSize: '16px',
-                fontWeight: '500',
-                color: trend === 'up' ? '#4CAF50' : '#f44336'
+                fontWeight: '600',
+                color: trend === 'up' ? '#22c55e' : '#ef4444',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
               }}
             >
-              {trend === 'up' ? '+' : ''}{priceChange.toFixed(2)}%
+              <span>{trend === 'up' ? '▲' : '▼'}</span>
+              <span>{trend === 'up' ? '+' : ''}{priceChange.toFixed(2)}%</span>
             </div>
           </div>
         </div>
