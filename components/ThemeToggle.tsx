@@ -14,26 +14,42 @@ export default function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
+    
     setMounted(true)
     
-    // Get initial theme from localStorage or system preference
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
-    if (savedTheme) {
-      setTheme(savedTheme)
-      document.documentElement.setAttribute('data-theme', savedTheme)
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      const initialTheme = prefersDark ? 'dark' : 'light'
-      setTheme(initialTheme)
-      document.documentElement.setAttribute('data-theme', initialTheme)
+    try {
+      // Get initial theme from localStorage or system preference
+      const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
+      if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
+        setTheme(savedTheme)
+        document.documentElement.setAttribute('data-theme', savedTheme)
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        const initialTheme = prefersDark ? 'dark' : 'light'
+        setTheme(initialTheme)
+        document.documentElement.setAttribute('data-theme', initialTheme)
+      }
+    } catch (error) {
+      // Fallback to light theme if there's any error
+      console.error('Error loading theme:', error)
+      setTheme('light')
+      document.documentElement.setAttribute('data-theme', 'light')
     }
   }, [])
 
   const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light'
-    setTheme(newTheme)
-    localStorage.setItem('theme', newTheme)
-    document.documentElement.setAttribute('data-theme', newTheme)
+    try {
+      const newTheme = theme === 'light' ? 'dark' : 'light'
+      setTheme(newTheme)
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('theme', newTheme)
+        document.documentElement.setAttribute('data-theme', newTheme)
+      }
+    } catch (error) {
+      console.error('Error toggling theme:', error)
+    }
   }
 
   // Don't render during SSR to avoid hydration mismatches
