@@ -50,7 +50,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       setTheme('light')
       setMounted(true)
     }
-  }, [mounted])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Empty dependency array - only run once on mount
 
   useEffect(() => {
     if (!mounted || typeof window === 'undefined') return
