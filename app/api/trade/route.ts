@@ -27,21 +27,21 @@ export async function POST(request: Request) {
     // Validate input
     if (!user_id || !player_id || !action || !quantity) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Missing required fields: user_id, player_id, type/action, and shares/quantity are required' },
         { status: 400 }
       )
     }
     
     if (action !== 'buy' && action !== 'sell') {
       return NextResponse.json(
-        { error: 'Action must be "buy" or "sell"' },
+        { error: 'Action/type must be "buy" or "sell"' },
         { status: 400 }
       )
     }
     
     if (quantity <= 0 || !Number.isInteger(quantity)) {
       return NextResponse.json(
-        { error: 'Quantity must be a positive integer' },
+        { error: 'Shares/quantity must be a positive integer' },
         { status: 400 }
       )
     }
