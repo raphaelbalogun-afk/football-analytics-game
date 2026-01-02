@@ -249,7 +249,15 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
       {showTradeModal && (
         <TradeModal
           player={player}
+          userId="demo-user-id"
+          userBalance={100000}
+          userShares={0}
+          isOpen={showTradeModal}
           onClose={() => setShowTradeModal(false)}
+          onTradeSuccess={() => {
+            setShowTradeModal(false)
+            window.location.reload()
+          }}
         />
       )}
     </>
