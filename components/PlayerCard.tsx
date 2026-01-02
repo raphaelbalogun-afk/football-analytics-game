@@ -65,12 +65,6 @@ export default function PlayerCard({ player }: PlayerCardProps) {
     <>
       <div
         style={{
-          textDecoration: 'none',
-          color: 'inherit'
-        }}
-      >
-      <div
-        style={{
           background: 'white',
           borderRadius: '12px',
           padding: '16px',
