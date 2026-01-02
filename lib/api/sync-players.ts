@@ -35,11 +35,24 @@ export async function syncPlayersFromAPI() {
     
     try {
       // Fetch players from the league directly
+      console.log(`[Sync] Attempting to fetch players for season ${CURRENT_SEASON}...`)
       const leaguePlayers = await getLeaguePlayers(EPL_LEAGUE_ID, CURRENT_SEASON)
       console.log(`[Sync] Fetched ${leaguePlayers.length} players from league endpoint`)
       
       if (leaguePlayers && leaguePlayers.length > 0) {
         allApiPlayers = leaguePlayers
+      } else {
+        console.warn(`[Sync] No players returned for season ${CURRENT_SEASON}. Trying season 2024 as fallback...`)
+        // Try 2024 season as fallback
+        try {
+          const leaguePlayers2024 = await getLeaguePlayers(EPL_LEAGUE_ID, 2024)
+          console.log(`[Sync] Fetched ${leaguePlayers2024.length} players from 2024 season`)
+          if (leaguePlayers2024 && leaguePlayers2024.length > 0) {
+            allApiPlayers = leaguePlayers2024
+          }
+        } catch (fallbackError: any) {
+          console.warn(`[Sync] Fallback to 2024 also failed: ${fallbackError.message}`)
+        }
       }
     } catch (leagueError: any) {
       console.warn(`[Sync] League endpoint failed: ${leagueError.message}`)
