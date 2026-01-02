@@ -1,9 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import { ThemeProvider } from '@/contexts/ThemeContext'
-import ThemeToggle from '@/components/ThemeToggle'
+import ClientLayout from '@/components/ClientLayout'
 
 export const metadata: Metadata = {
   title: 'Player Market - Football Analytics Game',
@@ -19,10 +17,9 @@ export default function RootLayout({
     <html lang="en">
       <body style={{ margin: 0, padding: 0 }}>
         <ThemeProvider>
-          <Header />
-          {children}
-          <Footer />
-          <ThemeToggle />
+          <ClientLayout>
+            {children}
+          </ClientLayout>
         </ThemeProvider>
       </body>
     </html>

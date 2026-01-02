@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { useTheme } from '@/contexts/ThemeContext'
 
 /**
@@ -9,7 +10,17 @@ import { useTheme } from '@/contexts/ThemeContext'
  * Positioned at the bottom of the page
  */
 export default function ThemeToggle() {
+  const [mounted, setMounted] = useState(false)
   const { theme, toggleTheme } = useTheme()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Don't render during SSR to avoid hydration mismatches
+  if (!mounted) {
+    return null
+  }
 
   return (
     <div
