@@ -118,8 +118,8 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
               >
                 {player.name}
               </h1>
-              <div style={{ width: '60px', height: '20px' }}>
-                <TrendLine trend={trend} percentage={Math.abs(priceChange)} />
+              <div style={{ width: '120px', height: '40px' }}>
+                <TrendLine trend={trend} percentage={Math.abs(priceChange)} playerId={player.id} />
               </div>
             </div>
             
