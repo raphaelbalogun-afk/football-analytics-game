@@ -116,6 +116,19 @@ export async function GET(request: Request) {
       })
     }
     
+    // Get current player prices for existing portfolio
+    const playerIds = portfolio?.map(p => p.player_id) || []
+    let players: any[] = []
+    
+    if (playerIds.length > 0) {
+      const { data: playersData } = await supabase
+        .from('players')
+        .select('*')
+        .in('id', playerIds)
+      
+      players = playersData || []
+    }
+    
     // Calculate total value for real portfolio
     let totalValue = 0
     const portfolioWithPrices = portfolio.map(item => {
