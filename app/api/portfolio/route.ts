@@ -29,19 +29,6 @@ export async function GET(request: Request) {
       )
     }
     
-    // Get current player prices
-    const playerIds = portfolio?.map(p => p.player_id) || []
-    let players: any[] = []
-    
-    if (playerIds.length > 0) {
-      const { data: playersData } = await supabase
-        .from('players')
-        .select('id, name, current_price')
-        .in('id', playerIds)
-      
-      players = playersData || []
-    }
-    
     // If no portfolio exists, generate demo data with 30 random players
     if (!portfolio || portfolio.length === 0) {
       if (!allPlayersData || allPlayersData.length === 0) {
