@@ -35,7 +35,7 @@ export async function GET(request: Request) {
       const { data: allPlayersData } = await supabase
         .from('players')
         .select('*')
-        .limit(100)
+        .limit(200) // Get more players to have better selection
       
       if (!allPlayersData || allPlayersData.length === 0) {
         return NextResponse.json({
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
       const shuffled = [...allPlayersData]
       // Fisher-Yates shuffle with seed based on userId for consistency
       for (let i = shuffled.length - 1; i > 0; i--) {
-        const seed = ((userId.charCodeAt(0) || 0) + i) % shuffled.length
+        const seed = ((userId.charCodeAt(0) || 0) + i * 7919) % shuffled.length
         const j = seed
         ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
       }
@@ -58,9 +58,11 @@ export async function GET(request: Request) {
       
       // Generate holdings totaling approximately 6000 R Bucks
       const targetTotal = 6000
+      
+      // First pass: calculate shares for each player
       const demoPortfolio = selectedPlayers.map((player, index) => {
         // Use deterministic calculation based on player ID and index (no Math.random)
-        const seed = ((player.id?.charCodeAt(0) || 0) + index) % 1000
+        const seed = ((player.id?.charCodeAt(0) || 0) + index * 7919) % 10000
         const randomFactor = ((seed * 9301 + 49297) % 233280) / 233280 // Simple PRNG
         
         // Calculate shares based on player price to distribute evenly
@@ -68,12 +70,21 @@ export async function GET(request: Request) {
         const basePrice = player.base_price || 25
         
         // Target value per player (6000 / 30 = 200 per player on average)
+        // Add variation: 0.5x to 1.5x the average
         const targetValuePerPlayer = targetTotal / selectedPlayers.length
-        const shares = Math.max(1, Math.floor(targetValuePerPlayer / currentPrice * (0.7 + randomFactor * 0.6)))
+        const variation = 0.5 + randomFactor * 1.0 // 0.5 to 1.5
+        const targetValue = targetValuePerPlayer * variation
+        
+        const shares = Math.max(1, Math.floor(targetValue / currentPrice))
         
         // Calculate price change (some players up, some down) - deterministic
-        const priceVariation = ((seed * 7919 + 12345) % 200) / 100 - 1 // -1% to +1%
-        const priceChange = basePrice * priceVariation
+        // 60% positive, 40% negative
+        const isPositive = (seed % 10) < 6
+        const priceVariationPercent = isPositive
+          ? ((seed % 50) / 10) // 0% to +5%
+          : -((seed % 50) / 10) // -5% to 0%
+        
+        const priceChange = basePrice * (priceVariationPercent / 100)
         const adjustedCurrentPrice = Math.max(1, basePrice + priceChange)
         const actualTotalValue = adjustedCurrentPrice * shares
         const priceChangePercent = (basePrice > 0) ? (priceChange / basePrice) * 100 : 0
@@ -117,9 +128,9 @@ export async function GET(request: Request) {
         return {
           ...item,
           shares: adjustedShares,
-          total_value: adjustedTotalValue,
-          value_change: adjustedValueChange,
-          value_change_percent: adjustedValueChangePercent
+          total_value: Math.round(adjustedTotalValue * 100) / 100,
+          value_change: Math.round(adjustedValueChange * 100) / 100,
+          value_change_percent: Math.round(adjustedValueChangePercent * 100) / 100
         }
       })
 
