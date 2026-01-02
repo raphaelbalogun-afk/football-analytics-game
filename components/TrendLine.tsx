@@ -19,19 +19,20 @@ export default function TrendLine({ trend, percentage }: TrendLineProps) {
   const dataPoints: number[] = []
   const baseValue = 50
   
+  // Use deterministic calculation based on percentage instead of random
   if (trend === 'up') {
-    // Upward trend
+    // Upward trend - deterministic based on percentage
     for (let i = 0; i < points; i++) {
       const progress = i / (points - 1)
-      const variation = Math.random() * 5 - 2.5 // Small random variation
+      const variation = (percentage / 100) * 2 // Small variation based on percentage
       dataPoints.push(baseValue + (progress * 30) + variation)
     }
   } else {
-    // Downward trend
+    // Downward trend - deterministic based on percentage
     for (let i = 0; i < points; i++) {
       const progress = i / (points - 1)
-      const variation = Math.random() * 5 - 2.5
-      dataPoints.push(baseValue - (progress * 30) + variation)
+      const variation = (percentage / 100) * 2
+      dataPoints.push(baseValue - (progress * 30) - variation)
     }
   }
   
