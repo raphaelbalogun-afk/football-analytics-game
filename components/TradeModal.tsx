@@ -56,7 +56,7 @@ export default function TradeModal({
       if (res.ok && data.success) {
         setMessage({ 
           type: 'success', 
-          text: `Trade successful! New price: £${data.newPrice.toFixed(2)}` 
+          text: `Trade successful! New price: 🪙${data.newPrice?.toFixed(2) || data.player?.current_price?.toFixed(2) || '0.00'}` 
         })
         setShares('')
         setTimeout(() => {
@@ -209,11 +209,17 @@ export default function TradeModal({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
               <span>Price per share:</span>
-              <span>£{player.current_price.toFixed(2)}</span>
+              <span>🪙{player.current_price.toFixed(2)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '600' }}>
               <span>Total {type === 'buy' ? 'Cost' : 'Revenue'}:</span>
-              <span>£{totalCost.toFixed(2)}</span>
+              <span>🪙{totalCost.toFixed(2)}</span>
+            </div>
+            <div style={{ fontSize: '12px', color: '#666', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #ddd' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Your Balance:</span>
+                <span>🪙{userBalance.toFixed(2)} R Bucks</span>
+              </div>
             </div>
           </div>
 
