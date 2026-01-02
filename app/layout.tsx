@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Football Analytics Game - Demo',
+  title: 'Player Market - Football Analytics Game',
   description: 'ENTERTAINMENT ONLY - Simulated trading game with virtual currency',
 }
 
@@ -13,7 +15,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body style={{ margin: 0, padding: 0 }}>
+        <Header />
+        {children}
+        <Footer />
+      </body>
     </html>
   )
 }

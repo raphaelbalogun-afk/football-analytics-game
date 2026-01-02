@@ -46,10 +46,15 @@ export default function PlayerCard({ player }: PlayerCardProps) {
       'Arsenal': '🇬🇧',
       'Chelsea': '🇬🇧',
       'Manchester United': '🇬🇧',
-      'Tottenham': '🇬🇧'
+      'Tottenham': '🇬🇧',
+      'Everton': '🇬🇧',
+      'Fulham': '🇬🇧'
     }
     return flags[team] || '🌍'
   }
+  
+  // Mock age (would come from player data)
+  const playerAge = (player as any).age || 25
   
   return (
     <Link
@@ -189,7 +194,7 @@ export default function PlayerCard({ player }: PlayerCardProps) {
             borderTop: '1px solid #f0f0f0'
           }}
         >
-          <span>Age: {player.age || 'N/A'}</span>
+          <span>Age: {playerAge}</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             {getCountryFlag(player.team)}
             <span>Nationality</span>
