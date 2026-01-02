@@ -31,6 +31,12 @@ export async function GET(request: Request) {
     
     // If no portfolio exists, generate demo data with 30 random players
     if (!portfolio || portfolio.length === 0) {
+      // Get all players for demo data generation
+      const { data: allPlayersData } = await supabase
+        .from('players')
+        .select('*')
+        .limit(100)
+      
       if (!allPlayersData || allPlayersData.length === 0) {
         return NextResponse.json({
           success: true,
