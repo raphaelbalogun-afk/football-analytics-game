@@ -53,8 +53,21 @@ export default function ThemeToggle() {
   }
 
   // Don't render during SSR to avoid hydration mismatches
+  // Return a placeholder with the same dimensions to prevent layout shift
   if (!mounted) {
-    return null
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          width: '56px',
+          height: '56px',
+          zIndex: 1000
+        }}
+        aria-hidden="true"
+      />
+    )
   }
 
   return (

@@ -161,12 +161,12 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
               </div>
             </div>
             
-            <div>
-              <div style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginBottom: '4px' }}>Volatility Factor</div>
-              <div style={{ fontSize: '18px', fontWeight: '600', color: 'var(--text-primary, #333)' }}>
-                {volatilityFactor.toFixed(2)}x
+              <div>
+                <div style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginBottom: '4px' }}>Volatility Factor</div>
+                <div style={{ fontSize: '18px', fontWeight: '600', color: 'var(--text-primary, #333)' }}>
+                  {((player.price_cap / player.base_price) * 0.5).toFixed(2)}x
+                </div>
               </div>
-            </div>
           </div>
           
           {/* Right Column */}

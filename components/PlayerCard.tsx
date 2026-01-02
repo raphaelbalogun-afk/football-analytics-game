@@ -37,14 +37,13 @@ export default function PlayerCard({ player }: PlayerCardProps) {
   const colorIndex = player.name.charCodeAt(0) % colors.length
   const circleColor = colors[colorIndex]
   
-  // Calculate price change with random variation
-  const basePrice = player.base_price || 25
-  const currentPrice = player.current_price || basePrice
-  
-  // Add random variation to price change for demo
-  const randomVariation = (Math.random() - 0.5) * 10 // -5% to +5%
-  const priceChange = ((currentPrice - basePrice) / basePrice) * 100 + randomVariation
-  const trend = priceChange >= 0 ? 'up' : 'down'
+      // Calculate price change
+      const basePrice = player.base_price || 25
+      const currentPrice = player.current_price || basePrice
+
+      // Calculate price change percentage (deterministic, no random)
+      const priceChange = basePrice > 0 ? ((currentPrice - basePrice) / basePrice) * 100 : 0
+      const trend = priceChange >= 0 ? 'up' : 'down'
   
   // Get nationality and age from player data
   const nationality = (player as any).nationality || 'Unknown'
