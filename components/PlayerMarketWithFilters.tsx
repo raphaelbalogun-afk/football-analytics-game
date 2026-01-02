@@ -56,7 +56,7 @@ export default function PlayerMarketWithFilters({ initialPlayers }: PlayerMarket
   return (
     <>
       <PlayerFilters players={initialPlayers} onFilterChange={setFilters} />
-      <div style={{ fontSize: '14px', color: '#666', marginBottom: '20px', fontWeight: '500' }}>
+      <div style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginBottom: '20px', fontWeight: '500' }}>
         Showing {filteredPlayers.length} of {initialPlayers.length} players
       </div>
       <PlayerMarketList players={filteredPlayers} />

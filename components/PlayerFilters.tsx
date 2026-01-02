@@ -46,8 +46,11 @@ export default function PlayerFilters({ players, onFilterChange }: PlayerFilters
   return (
     <div
       style={{
-        background: 'white',
-        border: '1px solid #e0e0e0',
+        background: 'var(--card-bg, white)',
+        border: '1px solid var(--card-border, #e0e0e0)',
+        transition: 'background-color 0.3s ease, border-color 0.3s ease'
+      }}
+    >
         borderRadius: '8px',
         padding: '20px',
         marginBottom: '24px'
