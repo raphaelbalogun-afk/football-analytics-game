@@ -18,7 +18,11 @@ export const dynamic = 'force-dynamic'
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { user_id, player_id, action, quantity } = body
+    const { user_id, player_id, type, shares } = body
+    
+    // Support both 'action'/'quantity' and 'type'/'shares' for backward compatibility
+    const action = type || body.action
+    const quantity = shares || body.quantity
     
     // Validate input
     if (!user_id || !player_id || !action || !quantity) {
@@ -160,20 +164,20 @@ export async function POST(request: Request) {
       // Update portfolio
       const { data: existingPortfolio } = await supabase
         .from('portfolios')
-        .select('quantity')
+        .select('shares')
         .eq('user_id', user_id)
         .eq('player_id', player_id)
         .single()
       
       if (existingPortfolio) {
         const newQuantity = action === 'buy'
-          ? existingPortfolio.quantity + quantity
-          : existingPortfolio.quantity - quantity
+          ? existingPortfolio.shares + quantity
+          : existingPortfolio.shares - quantity
         
         if (newQuantity > 0) {
           await supabase
             .from('portfolios')
-            .update({ quantity: newQuantity })
+            .update({ shares: newQuantity })
             .eq('user_id', user_id)
             .eq('player_id', player_id)
         } else {
@@ -189,7 +193,8 @@ export async function POST(request: Request) {
           .insert({
             user_id,
             player_id,
-            quantity
+            shares: quantity,
+            average_buy_price: price
           })
       }
       
@@ -199,10 +204,10 @@ export async function POST(request: Request) {
         .insert({
           user_id,
           player_id,
-          action,
-          quantity,
-          price,
-          total_cost: totalCost
+          type: action,
+          shares: quantity,
+          price_per_share: price,
+          total_amount: totalCost
         })
     }
     

@@ -46,13 +46,15 @@ export async function GET(request: Request) {
     let totalValue = 0
     const portfolioWithPrices = portfolio?.map(item => {
       const player = players.find(p => p.id === item.player_id)
-      const value = (player?.current_price || 0) * item.quantity
+      const shares = item.shares || item.quantity || 0 // Support both field names
+      const value = (player?.current_price || 0) * shares
       totalValue += value
       
       return {
         ...item,
         player_name: player?.name || 'Unknown',
         current_price: player?.current_price || 0,
+        shares: shares,
         total_value: value
       }
     }) || []
