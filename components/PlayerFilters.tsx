@@ -48,12 +48,10 @@ export default function PlayerFilters({ players, onFilterChange }: PlayerFilters
       style={{
         background: 'var(--card-bg, white)',
         border: '1px solid var(--card-border, #e0e0e0)',
-        transition: 'background-color 0.3s ease, border-color 0.3s ease'
-      }}
-    >
         borderRadius: '8px',
         padding: '20px',
-        marginBottom: '24px'
+        marginBottom: '24px',
+        transition: 'background-color 0.3s ease, border-color 0.3s ease'
       }}
     >
       <div style={{ marginBottom: '16px', fontSize: '14px', fontWeight: '600', color: '#666' }}>
@@ -69,7 +67,7 @@ export default function PlayerFilters({ players, onFilterChange }: PlayerFilters
       >
         {/* Search */}
         <div>
-          <label style={{ display: 'block', fontSize: '14px', marginBottom: '8px', color: '#333', fontWeight: '500' }}>
+          <label style={{ display: 'block', fontSize: '14px', marginBottom: '8px', color: 'var(--text-primary, #333)', fontWeight: '500' }}>
             Search by Name
           </label>
           <input
@@ -89,7 +87,7 @@ export default function PlayerFilters({ players, onFilterChange }: PlayerFilters
 
         {/* Position Filter */}
         <div>
-          <label style={{ display: 'block', fontSize: '14px', marginBottom: '8px', color: '#333', fontWeight: '500' }}>
+          <label style={{ display: 'block', fontSize: '14px', marginBottom: '8px', color: 'var(--text-primary, #333)', fontWeight: '500' }}>
             Filter by Position
           </label>
           <select
@@ -113,7 +111,7 @@ export default function PlayerFilters({ players, onFilterChange }: PlayerFilters
 
         {/* Team Filter */}
         <div>
-          <label style={{ display: 'block', fontSize: '14px', marginBottom: '8px', color: '#333', fontWeight: '500' }}>
+          <label style={{ display: 'block', fontSize: '14px', marginBottom: '8px', color: 'var(--text-primary, #333)', fontWeight: '500' }}>
             Filter by Club
           </label>
           <select
