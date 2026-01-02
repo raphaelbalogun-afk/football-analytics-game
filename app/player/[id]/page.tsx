@@ -62,12 +62,7 @@ export default async function PlayerPage({ params }: { params: { id: string } })
   return (
     <div className="container">
       <DisclaimerBanner />
-      <PlayerDetailWithTrade
-        player={player}
-        userId={userId}
-        userBalance={userBalance}
-        userShares={userShares}
-      />
+      <PlayerDetailCard player={player} />
     </div>
   )
 }
