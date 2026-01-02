@@ -51,12 +51,13 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
     <>
       <div
         style={{
-          background: 'white',
+          background: 'var(--card-bg, white)',
           borderRadius: '16px',
           padding: '32px',
           boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
           maxWidth: '800px',
-          margin: '0 auto'
+          margin: '0 auto',
+          transition: 'background-color 0.3s ease'
         }}
       >
         {/* Top Section */}
@@ -97,7 +98,7 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
                   margin: 0,
                   fontSize: '28px',
                   fontWeight: '700',
-                  color: '#333'
+                  color: 'var(--text-primary, #333)'
                 }}
               >
                 {player.name}
@@ -146,14 +147,14 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
             gap: '32px',
             marginBottom: '32px',
             paddingBottom: '24px',
-            borderBottom: '1px solid #e0e0e0'
+            borderBottom: '1px solid var(--card-border, #e0e0e0)'
           }}
         >
           {/* Left Column */}
           <div>
             <div style={{ marginBottom: '16px' }}>
-              <div style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>Position</div>
-              <div style={{ fontSize: '18px', fontWeight: '600', color: '#333' }}>
+              <div style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginBottom: '4px' }}>Position</div>
+              <div style={{ fontSize: '18px', fontWeight: '600', color: 'var(--text-primary, #333)' }}>
                 {player.position === 'GK' ? 'Goalkeeper' : 
                  player.position === 'DEF' ? 'Defender' :
                  player.position === 'MID' ? 'Midfielder' : 'Forward'}
@@ -161,8 +162,8 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
             </div>
             
             <div>
-              <div style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>Volatility Factor</div>
-              <div style={{ fontSize: '18px', fontWeight: '600', color: '#333' }}>
+              <div style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginBottom: '4px' }}>Volatility Factor</div>
+              <div style={{ fontSize: '18px', fontWeight: '600', color: 'var(--text-primary, #333)' }}>
                 {volatilityFactor.toFixed(2)}x
               </div>
             </div>
@@ -171,8 +172,8 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
           {/* Right Column */}
           <div>
             <div>
-              <div style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>Age</div>
-              <div style={{ fontSize: '18px', fontWeight: '600', color: '#333' }}>
+              <div style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginBottom: '4px' }}>Age</div>
+              <div style={{ fontSize: '18px', fontWeight: '600', color: 'var(--text-primary, #333)' }}>
                 {playerAge}
               </div>
             </div>
@@ -190,10 +191,10 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
         >
           {/* Current Price */}
           <div>
-            <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>Current Price</div>
+            <div style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginBottom: '8px' }}>Current Price</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '24px' }}>🪙</span>
-              <span style={{ fontSize: '32px', fontWeight: '700', color: '#333' }}>
+              <span style={{ fontSize: '32px', fontWeight: '700', color: 'var(--text-primary, #333)' }}>
                 {currentPrice.toFixed(2)}
               </span>
             </div>
@@ -201,10 +202,10 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
           
           {/* Base Price */}
           <div>
-            <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>Base Price</div>
+            <div style={{ fontSize: '14px', color: 'var(--text-secondary, #666)', marginBottom: '8px' }}>Base Price</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
               <span style={{ fontSize: '24px' }}>🪙</span>
-              <span style={{ fontSize: '24px', fontWeight: '600', color: '#333' }}>
+              <span style={{ fontSize: '24px', fontWeight: '600', color: 'var(--text-primary, #333)' }}>
                 {basePrice.toFixed(2)}
               </span>
             </div>

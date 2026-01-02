@@ -27,24 +27,25 @@ export default function PortfolioList({ holdings }: PortfolioListProps) {
   return (
     <div
       style={{
-        background: '#1a1a1a',
+        background: 'var(--card-bg, #1a1a1a)',
         borderRadius: '12px',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        transition: 'background-color 0.3s ease'
       }}
     >
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
-          <tr style={{ background: '#2d2d2d', borderBottom: '2px solid #333' }}>
-            <th style={{ padding: '16px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: '#999' }}>
+          <tr style={{ background: 'var(--card-border, #2d2d2d)', borderBottom: '2px solid var(--card-border, #333)' }}>
+            <th style={{ padding: '16px', textAlign: 'left', fontSize: '12px', fontWeight: '600', color: 'var(--text-muted, #999)' }}>
               Player Name
             </th>
-            <th style={{ padding: '16px', textAlign: 'right', fontSize: '12px', fontWeight: '600', color: '#999' }}>
+            <th style={{ padding: '16px', textAlign: 'right', fontSize: '12px', fontWeight: '600', color: 'var(--text-muted, #999)' }}>
               Base Price
             </th>
-            <th style={{ padding: '16px', textAlign: 'right', fontSize: '12px', fontWeight: '600', color: '#999' }}>
+            <th style={{ padding: '16px', textAlign: 'right', fontSize: '12px', fontWeight: '600', color: 'var(--text-muted, #999)' }}>
               Holdings
             </th>
-            <th style={{ padding: '16px', textAlign: 'right', fontSize: '12px', fontWeight: '600', color: '#999' }}>
+            <th style={{ padding: '16px', textAlign: 'right', fontSize: '12px', fontWeight: '600', color: 'var(--text-muted, #999)' }}>
               Total Value
             </th>
           </tr>
@@ -54,20 +55,21 @@ export default function PortfolioList({ holdings }: PortfolioListProps) {
             <tr
               key={holding.player.id}
               style={{
-                borderBottom: index < holdings.length - 1 ? '1px solid #2d2d2d' : 'none',
-                background: index % 2 === 0 ? '#1a1a1a' : '#1f1f1f'
+                borderBottom: index < holdings.length - 1 ? `1px solid var(--card-border, #2d2d2d)` : 'none',
+                background: index % 2 === 0 ? 'var(--card-bg, #1a1a1a)' : 'var(--background, #1f1f1f)',
+                transition: 'background-color 0.3s ease'
               }}
             >
               {/* Player Name */}
               <td style={{ padding: '16px' }}>
-                <div style={{ color: '#fff', fontWeight: '500', fontSize: '14px' }}>
+                <div style={{ color: 'var(--text-primary, #fff)', fontWeight: '500', fontSize: '14px' }}>
                   {holding.player.name}
                 </div>
               </td>
               
               {/* Base Price with Change */}
               <td style={{ padding: '16px', textAlign: 'right' }}>
-                <div style={{ color: '#fff', fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>
+                <div style={{ color: 'var(--text-primary, #fff)', fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>
                   🪙{holding.currentPrice.toFixed(2)}
                 </div>
                 <div
@@ -83,14 +85,14 @@ export default function PortfolioList({ holdings }: PortfolioListProps) {
               
               {/* Holdings/Quantity */}
               <td style={{ padding: '16px', textAlign: 'right' }}>
-                <div style={{ color: '#fff', fontSize: '14px', fontWeight: '500' }}>
+                <div style={{ color: 'var(--text-primary, #fff)', fontSize: '14px', fontWeight: '500' }}>
                   {holding.shares.toLocaleString()} shares
                 </div>
               </td>
               
               {/* Total Value with Change */}
               <td style={{ padding: '16px', textAlign: 'right' }}>
-                <div style={{ color: '#fff', fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>
+                <div style={{ color: 'var(--text-primary, #fff)', fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>
                   🪙{holding.totalValue.toFixed(2)}
                 </div>
                 <div

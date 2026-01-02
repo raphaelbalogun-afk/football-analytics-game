@@ -111,7 +111,7 @@ export default function PortfolioPieChart({ holdings }: PortfolioPieChartProps) 
       
       {/* Legend */}
       <div style={{ flex: '1', minWidth: '300px' }}>
-        <div style={{ color: '#fff', fontSize: '18px', fontWeight: '600', marginBottom: '20px' }}>
+        <div style={{ color: 'var(--text-primary, #fff)', fontSize: '18px', fontWeight: '600', marginBottom: '20px' }}>
           Holdings Breakdown
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '400px', overflowY: 'auto' }}>
@@ -138,13 +138,13 @@ export default function PortfolioPieChart({ holdings }: PortfolioPieChartProps) 
                     flexShrink: 0
                   }}
                 />
-                <div style={{ flex: 1, color: '#fff', fontSize: '14px' }}>
+                <div style={{ flex: 1, color: 'var(--text-primary, #fff)', fontSize: '14px' }}>
                   {slice.player.name}
                 </div>
-                <div style={{ color: '#999', fontSize: '12px', marginRight: '8px' }}>
+                <div style={{ color: 'var(--text-muted, #999)', fontSize: '12px', marginRight: '8px' }}>
                   {slice.percentage.toFixed(1)}%
                 </div>
-                <div style={{ color: '#fff', fontSize: '14px', fontWeight: '500', minWidth: '80px', textAlign: 'right' }}>
+                <div style={{ color: 'var(--text-primary, #fff)', fontSize: '14px', fontWeight: '500', minWidth: '80px', textAlign: 'right' }}>
                   🪙{slice.totalValue.toFixed(2)}
                 </div>
               </div>

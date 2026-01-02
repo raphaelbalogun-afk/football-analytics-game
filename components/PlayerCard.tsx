@@ -65,13 +65,13 @@ export default function PlayerCard({ player }: PlayerCardProps) {
     <>
       <div
         style={{
-          background: 'white',
+          background: 'var(--card-bg, white)',
           borderRadius: '12px',
           padding: '16px',
           boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          transition: 'transform 0.2s, box-shadow 0.2s',
+          transition: 'transform 0.2s, box-shadow 0.2s, background-color 0.3s ease, border-color 0.3s ease',
           cursor: 'pointer',
-          border: '1px solid #e0e0e0'
+          border: '1px solid var(--card-border, #e0e0e0)'
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-4px)'
@@ -107,7 +107,7 @@ export default function PlayerCard({ player }: PlayerCardProps) {
             margin: '0 0 8px 0',
             fontSize: '16px',
             fontWeight: '600',
-            color: '#333'
+            color: 'var(--text-primary, #333)'
           }}
         >
           {player.name}

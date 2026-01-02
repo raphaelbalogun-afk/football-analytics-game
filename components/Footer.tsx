@@ -7,12 +7,13 @@ export default function Footer() {
   return (
     <footer
       style={{
-        background: '#2d2d2d',
-        color: '#999',
+        background: 'var(--footer-bg, #2d2d2d)',
+        color: 'var(--footer-text, #999)',
         padding: '24px',
         marginTop: '60px',
         textAlign: 'center',
-        fontSize: '12px'
+        fontSize: '12px',
+        transition: 'background-color 0.3s ease, color 0.3s ease'
       }}
     >
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>

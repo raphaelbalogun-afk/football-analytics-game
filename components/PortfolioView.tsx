@@ -46,41 +46,44 @@ export default function PortfolioView({ holdings, virtualBalance, totalValue }: 
       >
         <div
           style={{
-            background: 'white',
-            border: '1px solid #e0e0e0',
+            background: 'var(--card-bg, white)',
+            border: '1px solid var(--card-border, #e0e0e0)',
             borderRadius: '8px',
-            padding: '16px'
+            padding: '16px',
+            transition: 'background-color 0.3s ease, border-color 0.3s ease'
           }}
         >
-          <div style={{ fontSize: '12px', color: '#999', marginBottom: '4px' }}>Virtual Balance</div>
-          <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted, #999)', marginBottom: '4px' }}>Virtual Balance</div>
+          <div style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
             🪙{virtualBalance.toFixed(2)}
           </div>
         </div>
 
         <div
           style={{
-            background: 'white',
-            border: '1px solid #e0e0e0',
+            background: 'var(--card-bg, white)',
+            border: '1px solid var(--card-border, #e0e0e0)',
             borderRadius: '8px',
-            padding: '16px'
+            padding: '16px',
+            transition: 'background-color 0.3s ease, border-color 0.3s ease'
           }}
         >
-          <div style={{ fontSize: '12px', color: '#999', marginBottom: '4px' }}>Portfolio Value</div>
-          <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted, #999)', marginBottom: '4px' }}>Portfolio Value</div>
+          <div style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--text-primary, #333)' }}>
             🪙{totalValue.toFixed(2)}
           </div>
         </div>
 
         <div
           style={{
-            background: 'white',
-            border: '1px solid #e0e0e0',
+            background: 'var(--card-bg, white)',
+            border: '1px solid var(--card-border, #e0e0e0)',
             borderRadius: '8px',
-            padding: '16px'
+            padding: '16px',
+            transition: 'background-color 0.3s ease, border-color 0.3s ease'
           }}
         >
-          <div style={{ fontSize: '12px', color: '#999', marginBottom: '4px' }}>Total Value</div>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted, #999)', marginBottom: '4px' }}>Total Value</div>
           <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#0070f3' }}>
             🪙{(virtualBalance + totalValue).toFixed(2)}
           </div>
@@ -94,13 +97,14 @@ export default function PortfolioView({ holdings, virtualBalance, totalValue }: 
           justifyContent: 'space-between',
           alignItems: 'center',
           marginBottom: '20px',
-          background: 'white',
-          border: '1px solid #e0e0e0',
+          background: 'var(--card-bg, white)',
+          border: '1px solid var(--card-border, #e0e0e0)',
           borderRadius: '8px',
-          padding: '12px 16px'
+          padding: '12px 16px',
+          transition: 'background-color 0.3s ease, border-color 0.3s ease'
         }}
       >
-        <div style={{ fontSize: '14px', fontWeight: '600', color: '#333' }}>
+        <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-primary, #333)' }}>
           {holdings.length} Holdings
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
@@ -108,8 +112,8 @@ export default function PortfolioView({ holdings, virtualBalance, totalValue }: 
             onClick={() => setViewMode('list')}
             style={{
               padding: '8px 16px',
-              background: viewMode === 'list' ? '#0070f3' : '#f5f5f5',
-              color: viewMode === 'list' ? 'white' : '#333',
+              background: viewMode === 'list' ? '#0070f3' : 'var(--card-border, #f5f5f5)',
+              color: viewMode === 'list' ? 'white' : 'var(--text-primary, #333)',
               border: 'none',
               borderRadius: '6px',
               fontSize: '14px',
@@ -124,8 +128,8 @@ export default function PortfolioView({ holdings, virtualBalance, totalValue }: 
             onClick={() => setViewMode('chart')}
             style={{
               padding: '8px 16px',
-              background: viewMode === 'chart' ? '#0070f3' : '#f5f5f5',
-              color: viewMode === 'chart' ? 'white' : '#333',
+              background: viewMode === 'chart' ? '#0070f3' : 'var(--card-border, #f5f5f5)',
+              color: viewMode === 'chart' ? 'white' : 'var(--text-primary, #333)',
               border: 'none',
               borderRadius: '6px',
               fontSize: '14px',
@@ -143,12 +147,13 @@ export default function PortfolioView({ holdings, virtualBalance, totalValue }: 
       {holdings.length === 0 ? (
         <div
           style={{
-            background: 'white',
-            border: '1px solid #e0e0e0',
+            background: 'var(--card-bg, white)',
+            border: '1px solid var(--card-border, #e0e0e0)',
             borderRadius: '8px',
             padding: '40px',
             textAlign: 'center',
-            color: '#666'
+            color: 'var(--text-secondary, #666)',
+            transition: 'background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease'
           }}
         >
           <p style={{ margin: 0, fontSize: '16px' }}>No holdings yet.</p>
@@ -165,9 +170,10 @@ export default function PortfolioView({ holdings, virtualBalance, totalValue }: 
       ) : (
         <div
           style={{
-            background: '#1a1a1a',
+            background: 'var(--card-bg, #1a1a1a)',
             borderRadius: '12px',
-            padding: '24px'
+            padding: '24px',
+            transition: 'background-color 0.3s ease'
           }}
         >
           <PortfolioPieChart holdings={holdings} />

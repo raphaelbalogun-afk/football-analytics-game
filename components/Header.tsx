@@ -33,8 +33,8 @@ export default function Header() {
   return (
     <header
       style={{
-        background: '#2d2d2d',
-        color: 'white',
+        background: 'var(--header-bg, #2d2d2d)',
+        color: 'var(--header-text, white)',
         padding: '12px 24px',
         display: 'flex',
         alignItems: 'center',
@@ -42,7 +42,8 @@ export default function Header() {
         position: 'sticky',
         top: 0,
         zIndex: 1000,
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        transition: 'background-color 0.3s ease, color 0.3s ease'
       }}
     >
       {/* Logo and Title */}

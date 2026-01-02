@@ -103,18 +103,19 @@ export default function TradeModal({
     >
       <div
         style={{
-          background: 'white',
+          background: 'var(--card-bg, white)',
           borderRadius: '8px',
           padding: '24px',
           maxWidth: '500px',
           width: '100%',
           maxHeight: '90vh',
-          overflow: 'auto'
+          overflow: 'auto',
+          transition: 'background-color 0.3s ease'
         }}
         onClick={(e) => e.stopPropagation()}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0, fontSize: '20px' }}>Trade {player.name}</h2>
+          <h2 style={{ margin: 0, fontSize: '20px', color: 'var(--text-primary, #333)' }}>Trade {player.name}</h2>
           <button
             onClick={onClose}
             style={{
@@ -122,7 +123,7 @@ export default function TradeModal({
               border: 'none',
               fontSize: '24px',
               cursor: 'pointer',
-              color: '#666',
+              color: 'var(--text-secondary, #666)',
               padding: '0',
               width: '30px',
               height: '30px'
