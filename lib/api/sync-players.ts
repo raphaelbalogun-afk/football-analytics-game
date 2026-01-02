@@ -50,7 +50,7 @@ export async function syncPlayersFromAPI() {
         const teams = await getTeams(EPL_LEAGUE_ID, CURRENT_SEASON)
         console.log(`[Sync] Found ${teams.length} teams`)
         
-        for (let i = 0; i < Math.min(teams.length, 5); i++) { // Limit to 5 teams for testing
+        for (let i = 0; i < teams.length; i++) { // Process all teams
           const team: any = teams[i]
           const teamId = team?.team?.id || team?.id
           const teamName = team?.team?.name || team?.name || 'Unknown'
