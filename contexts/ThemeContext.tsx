@@ -15,8 +15,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light')
   const [mounted, setMounted] = useState(false)
 
+  // Initialize theme on mount - always call hooks in the same order
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined') {
+      setMounted(true)
+      return
+    }
+    
     if (mounted) return // Prevent re-running if already mounted
     
     try {
@@ -53,6 +58,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Empty dependency array - only run once on mount
 
+  // Update DOM when theme changes - always call hooks in the same order
   useEffect(() => {
     if (!mounted || typeof window === 'undefined') return
     
@@ -70,12 +76,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [theme, mounted])
 
+  // Always return the provider - never conditionally return different structures
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light')
-  }
-
-  if (!mounted) {
-    return <>{children}</>
   }
 
   return (
