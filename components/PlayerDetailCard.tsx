@@ -115,13 +115,14 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
                   alt={player.team}
                   style={{ width: '24px', height: '24px', objectFit: 'contain' }}
                   onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none'
-                    const parent = (e.target as HTMLImageElement).parentElement
+                    const target = e.target as HTMLImageElement
+                    target.style.display = 'none'
+                    const parent = target.parentElement
                     if (parent) {
                       const emoji = document.createElement('span')
                       emoji.textContent = '🏟️'
                       emoji.style.fontSize = '20px'
-                      parent.insertBefore(emoji, e.target)
+                      parent.insertBefore(emoji, target)
                     }
                   }}
                 />
