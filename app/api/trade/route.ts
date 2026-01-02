@@ -73,11 +73,13 @@ export async function POST(request: Request) {
     }
     
     // Calculate price and cost
-    const price = action === 'buy' 
-      ? calculateBuyPrice(player.current_price, quantity)
-      : calculateSellPrice(player.current_price, quantity)
+    // Pricing functions expect: (currentPrice, shares, totalShares, priceCap/Floor)
+    const priceUpdate = action === 'buy' 
+      ? calculateBuyPrice(player.current_price, quantity, player.total_shares, player.price_cap)
+      : calculateSellPrice(player.current_price, quantity, player.total_shares, player.price_floor)
     
-    const totalCost = calculateTotalCost(price, quantity)
+    const price = priceUpdate.newPrice
+    const totalCost = calculateTotalCost(quantity, price)
     
     // Validate trade
     if (action === 'buy') {
@@ -119,7 +121,7 @@ export async function POST(request: Request) {
       p_player_id: player_id,
       p_action: action,
       p_quantity: quantity,
-      p_price: price,
+      p_price: priceUpdate.newPrice,
       p_total_cost: totalCost
     })
     
@@ -148,7 +150,7 @@ export async function POST(request: Request) {
         .from('players')
         .update({ 
           available_shares: newAvailableShares,
-          current_price: price,
+          current_price: priceUpdate.newPrice,
           updated_at: new Date().toISOString()
         })
         .eq('id', player_id)
