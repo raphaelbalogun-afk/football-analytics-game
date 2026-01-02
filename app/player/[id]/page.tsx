@@ -34,9 +34,9 @@ async function getUserBalance(userId: string): Promise<number> {
   try {
     // In a real app, get from Supabase users table
     // For demo, return default balance
-    return 100000
+    return 10000
   } catch (error) {
-    return 100000
+    return 10000
   }
 }
 

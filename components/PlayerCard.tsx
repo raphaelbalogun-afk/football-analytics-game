@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import TrendLine from './TrendLine'
+import TradeModal from './TradeModal'
 import { getTeamLogo } from '@/lib/utils/team-logos'
 import { getCountryFlag } from '@/lib/utils/country-flags'
 import type { Player } from '@/types/database'
@@ -16,6 +18,8 @@ interface PlayerCardProps {
  * Displays player information in a card format matching the deployed design
  */
 export default function PlayerCard({ player }: PlayerCardProps) {
+  const [showTradeModal, setShowTradeModal] = useState(false)
+  
   // Calculate initials
   const initials = player.name
     .split(' ')
@@ -46,14 +50,25 @@ export default function PlayerCard({ player }: PlayerCardProps) {
   const nationality = (player as any).nationality || 'Unknown'
   const playerAge = (player as any).age || 25
   
+  // Demo user data (in production, get from auth/session)
+  const userId = 'demo-user-id'
+  const userBalance = 10000 // Updated to 10000
+  const userShares = 0 // Would fetch from portfolio in production
+  
+  const handleBuyClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setShowTradeModal(true)
+  }
+  
   return (
-    <Link
-      href={`/player/${player.id}`}
-      style={{
-        textDecoration: 'none',
-        color: 'inherit'
-      }}
-    >
+    <>
+      <div
+        style={{
+          textDecoration: 'none',
+          color: 'inherit'
+        }}
+      >
       <div
         style={{
           background: 'white',
@@ -196,7 +211,8 @@ export default function PlayerCard({ player }: PlayerCardProps) {
             fontSize: '12px',
             color: '#999',
             paddingTop: '8px',
-            borderTop: '1px solid #f0f0f0'
+            borderTop: '1px solid #f0f0f0',
+            marginBottom: '12px'
           }}
         >
           <span>Age: {playerAge}</span>
@@ -205,7 +221,64 @@ export default function PlayerCard({ player }: PlayerCardProps) {
             <span>{nationality}</span>
           </span>
         </div>
+        
+        {/* Buy Shares Button */}
+        <button
+          onClick={handleBuyClick}
+          style={{
+            width: '100%',
+            padding: '10px',
+            background: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'background 0.2s',
+            marginTop: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = '#45a049'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = '#4CAF50'
+          }}
+        >
+          Buy Shares
+        </button>
+        
+        {/* View Details Link */}
+        <Link
+          href={`/player/${player.id}`}
+          style={{
+            display: 'block',
+            textAlign: 'center',
+            marginTop: '8px',
+            fontSize: '12px',
+            color: '#0070f3',
+            textDecoration: 'none'
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          View Details →
+        </Link>
       </div>
-    </Link>
+      
+      {showTradeModal && (
+        <TradeModal
+          player={player}
+          userId={userId}
+          userBalance={userBalance}
+          userShares={userShares}
+          isOpen={showTradeModal}
+          onClose={() => setShowTradeModal(false)}
+          onTradeSuccess={() => {
+            setShowTradeModal(false)
+            window.location.reload()
+          }}
+        />
+      )}
+    </>
   )
 }

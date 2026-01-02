@@ -250,7 +250,7 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
         <TradeModal
           player={player}
           userId="demo-user-id"
-          userBalance={100000}
+          userBalance={10000}
           userShares={0}
           isOpen={showTradeModal}
           onClose={() => setShowTradeModal(false)}
