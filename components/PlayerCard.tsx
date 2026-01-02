@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import TrendLine from './TrendLine'
+import { getTeamLogo } from '@/lib/utils/team-logos'
+import { getCountryFlag } from '@/lib/utils/country-flags'
 import type { Player } from '@/types/database'
 
 interface PlayerCardProps {
@@ -31,29 +33,17 @@ export default function PlayerCard({ player }: PlayerCardProps) {
   const colorIndex = player.name.charCodeAt(0) % colors.length
   const circleColor = colors[colorIndex]
   
-  // Calculate price change (mock for now - would come from price history)
+  // Calculate price change with random variation
   const basePrice = player.base_price || 25
   const currentPrice = player.current_price || basePrice
-  const priceChange = ((currentPrice - basePrice) / basePrice) * 100
+  
+  // Add random variation to price change for demo
+  const randomVariation = (Math.random() - 0.5) * 10 // -5% to +5%
+  const priceChange = ((currentPrice - basePrice) / basePrice) * 100 + randomVariation
   const trend = priceChange >= 0 ? 'up' : 'down'
   
-  // Mock nationality flag (would come from player data)
-  const getCountryFlag = (team: string) => {
-    // Simple mapping - in production would use actual player nationality
-    const flags: Record<string, string> = {
-      'Manchester City': '🇬🇧',
-      'Liverpool': '🇬🇧',
-      'Arsenal': '🇬🇧',
-      'Chelsea': '🇬🇧',
-      'Manchester United': '🇬🇧',
-      'Tottenham': '🇬🇧',
-      'Everton': '🇬🇧',
-      'Fulham': '🇬🇧'
-    }
-    return flags[team] || '🌍'
-  }
-  
-  // Mock age (would come from player data)
+  // Get nationality and age from player data
+  const nationality = (player as any).nationality || 'Unknown'
   const playerAge = (player as any).age || 25
   
   return (
@@ -125,7 +115,21 @@ export default function PlayerCard({ player }: PlayerCardProps) {
             color: '#666'
           }}
         >
-          <span style={{ fontSize: '16px' }}>🏟️</span>
+          <img
+            src={getTeamLogo(player.team)}
+            alt={player.team}
+            style={{ width: '20px', height: '20px', objectFit: 'contain' }}
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none'
+              const parent = (e.target as HTMLImageElement).parentElement
+              if (parent) {
+                const emoji = document.createElement('span')
+                emoji.textContent = '🏟️'
+                emoji.style.fontSize = '16px'
+                parent.insertBefore(emoji, e.target)
+              }
+            }}
+          />
           <span>{player.team}</span>
         </div>
         
@@ -166,7 +170,7 @@ export default function PlayerCard({ player }: PlayerCardProps) {
               color: '#333'
             }}
           >
-            {currentPrice.toFixed(2)} R Bucks
+            {currentPrice.toFixed(2)}
           </span>
         </div>
         
@@ -196,8 +200,8 @@ export default function PlayerCard({ player }: PlayerCardProps) {
         >
           <span>Age: {playerAge}</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            {getCountryFlag(player.team)}
-            <span>Nationality</span>
+            {getCountryFlag(nationality)}
+            <span>{nationality}</span>
           </span>
         </div>
       </div>

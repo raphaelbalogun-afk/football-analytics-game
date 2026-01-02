@@ -51,16 +51,80 @@ export default function Header() {
           style={{
             width: '32px',
             height: '32px',
-            background: 'linear-gradient(135deg, #4CAF50 0%, #FFC107 100%)',
-            borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '18px',
-            fontWeight: 'bold'
+            justifyContent: 'center'
           }}
         >
-          ⚽
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 64 64"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="PlayerMarket animated favicon"
+          >
+            <rect width="64" height="64" rx="12" fill="#111827" />
+            <polygon
+              points="32,6 42,20 38,20 38,32 26,32 26,20 22,20"
+              fill="#22C55E"
+            >
+              <animateTransform
+                attributeName="transform"
+                type="translate"
+                from="0 0"
+                to="0 -2"
+                dur="1.4s"
+                repeatCount="indefinite"
+                direction="alternate"
+              />
+            </polygon>
+            <polygon
+              points="32,58 42,44 38,44 38,32 26,32 26,44 22,44"
+              fill="#EF4444"
+            >
+              <animateTransform
+                attributeName="transform"
+                type="translate"
+                from="0 0"
+                to="0 2"
+                dur="1.4s"
+                repeatCount="indefinite"
+                direction="alternate"
+              />
+            </polygon>
+            <circle cx="32" cy="32" r="12" fill="#FACC15" />
+            <g>
+              <animateTransform
+                attributeName="transform"
+                type="translate"
+                from="0 0"
+                to="0 1"
+                dur="1.2s"
+                repeatCount="indefinite"
+                direction="alternate"
+              />
+              <path
+                d="M24 32 C26 30, 30 30, 32 32 C34 34, 38 34, 40 32"
+                stroke="#111827"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                fill="none"
+              />
+              <path
+                d="M23 31 C21 29, 20 28, 19 27"
+                stroke="#111827"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <path
+                d="M41 31 C43 29, 44 28, 45 27"
+                stroke="#111827"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+            </g>
+          </svg>
         </div>
         <Link
           href="/market"
@@ -109,14 +173,32 @@ export default function Header() {
             background: 'transparent',
             border: 'none',
             cursor: 'pointer',
-            fontSize: '24px',
             padding: '4px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            width: '40px',
+            height: '40px'
           }}
         >
-          😊
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 48 48"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Donut user icon"
+          >
+            <circle cx="24" cy="24" r="18" fill="#F5C542" />
+            <circle cx="24" cy="24" r="8" fill="#111827" />
+            <path
+              d="M12 18 C14 16, 18 16, 20 18 C22 20, 26 20, 28 18 C30 16, 34 16, 36 18"
+              stroke="#E879F9"
+              strokeWidth="4"
+              strokeLinecap="round"
+              fill="none"
+            />
+          </svg>
         </button>
 
         {userMenuOpen && (

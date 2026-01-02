@@ -91,35 +91,35 @@ export async function getLeagues() {
 /**
  * Get EPL standings/table
  */
-export async function getStandings(league: number = 39, season: number = 2024) {
+export async function getStandings(league: number = 39, season: number = 2025) {
   return apiRequest('/standings', { league, season })
 }
 
 /**
  * Get all teams in a league
  */
-export async function getTeams(league: number = 39, season: number = 2024) {
+export async function getTeams(league: number = 39, season: number = 2025) {
   return apiRequest('/teams', { league, season })
 }
 
 /**
  * Get players from a team (squad)
  */
-export async function getTeamPlayers(team: number, season: number = 2024) {
+export async function getTeamPlayers(team: number, season: number = 2025) {
   return apiRequest('/players/squads', { team })
 }
 
 /**
  * Get players by team (alternative endpoint)
  */
-export async function getPlayersByTeam(team: number, season: number = 2024) {
+export async function getPlayersByTeam(team: number, season: number = 2025) {
   return apiRequest('/players', { team, season })
 }
 
 /**
  * Get all players in a league (with pagination)
  */
-export async function getLeaguePlayers(league: number = 39, season: number = 2024, maxPages: number = 10) {
+export async function getLeaguePlayers(league: number = 39, season: number = 2025, maxPages: number = 10) {
   const allPlayers: any[] = []
   
   for (let page = 1; page <= maxPages; page++) {
@@ -153,21 +153,21 @@ export async function getLeaguePlayers(league: number = 39, season: number = 202
 /**
  * Get player statistics
  */
-export async function getPlayerStats(player: number, season: number = 2024) {
+export async function getPlayerStats(player: number, season: number = 2025) {
   return apiRequest('/players', { id: player, season })
 }
 
 /**
  * Get player statistics by team
  */
-export async function getTeamPlayerStats(team: number, season: number = 2024) {
+export async function getTeamPlayerStats(team: number, season: number = 2025) {
   return apiRequest('/players', { team, season })
 }
 
 /**
  * Get fixtures (matches)
  */
-export async function getFixtures(league: number = 39, season: number = 2024) {
+export async function getFixtures(league: number = 39, season: number = 2025) {
   return apiRequest('/fixtures', { league, season })
 }
 

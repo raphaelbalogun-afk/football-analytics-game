@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const league = parseInt(searchParams.get('league') || '39')
-    const season = parseInt(searchParams.get('season') || '2024')
+    const season = parseInt(searchParams.get('season') || '2025')
     
     const standings = await getStandings(league, season)
     

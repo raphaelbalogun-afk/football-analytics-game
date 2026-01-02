@@ -13,7 +13,7 @@ interface LeagueFiltersProps {
  */
 export default function LeagueFilters({ onFilterChange }: LeagueFiltersProps) {
   const [leagueId, setLeagueId] = useState(39) // EPL default
-  const [season, setSeason] = useState(2024)
+  const [season, setSeason] = useState(2025)
   const [leagues, setLeagues] = useState<Array<{ id: number, name: string }>>([])
   const [loading, setLoading] = useState(true)
 

@@ -1,5 +1,5 @@
 import DisclaimerBanner from '@/components/DisclaimerBanner'
-import PlayerDetailWithTrade from '@/components/PlayerDetailWithTrade'
+import PlayerDetailCard from '@/components/PlayerDetailCard'
 import Link from 'next/link'
 import type { Player } from '@/types/database'
 

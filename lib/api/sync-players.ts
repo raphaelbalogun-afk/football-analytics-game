@@ -9,7 +9,7 @@ import { transformApiPlayerToDB } from './player-transformer'
 import { createClient } from '@/lib/supabase/server'
 
 const EPL_LEAGUE_ID = 39
-const CURRENT_SEASON = 2024
+const CURRENT_SEASON = 2025
 
 /**
  * Sync all EPL players from API-Football to Supabase
@@ -159,12 +159,15 @@ export async function syncPlayersFromAPI() {
             successCount++
           }
         } else {
-          // Insert new player
+          // Insert new player - add random variation to current price
+          const variation = (Math.random() - 0.5) * 0.1 // -5% to +5%
+          const variedPrice = player.base_price * (1 + variation)
+          
           const { error } = await supabase
             .from('players')
             .insert({
               ...player,
-              current_price: player.base_price,
+              current_price: Math.round(variedPrice * 100) / 100,
               available_shares: player.total_shares
             })
           

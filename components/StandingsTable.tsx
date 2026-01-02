@@ -35,7 +35,7 @@ interface Standing {
  */
 export default function StandingsTable() {
   const [leagueId, setLeagueId] = useState(39)
-  const [season, setSeason] = useState(2024)
+  const [season, setSeason] = useState(2025)
   const [standings, setStandings] = useState<Standing[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const playerId = searchParams.get('player')
     const teamId = searchParams.get('team')
-    const season = parseInt(searchParams.get('season') || '2024')
+    const season = parseInt(searchParams.get('season') || '2025')
     
     if (playerId) {
       // Get specific player stats
