@@ -36,11 +36,26 @@ export default function PlayerDetailCard({ player }: PlayerDetailCardProps) {
   const colorIndex = player.name.charCodeAt(0) % colors.length
   const circleColor = colors[colorIndex]
   
-  // Calculate price change
-  const basePrice = player.base_price || 25
-  const currentPrice = player.current_price || basePrice
-  const priceChange = ((currentPrice - basePrice) / basePrice) * 100
-  const trend = priceChange >= 0 ? 'up' : 'down'
+      // Calculate price change with deterministic variation
+      const basePrice = player.base_price || 25
+      const currentPrice = player.current_price || basePrice
+      
+      // Use player ID for deterministic but varied price changes
+      const playerSeed = player.id ? player.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0
+      const variationFactor = ((playerSeed * 7919 + 12345) % 200) / 100 - 1 // -1 to +1
+      
+      // Base price change from actual data
+      const actualPriceChange = basePrice > 0 ? ((currentPrice - basePrice) / basePrice) * 100 : 0
+      
+      // Add deterministic variation: 60% positive, 40% negative
+      const isPositive = (playerSeed % 10) < 6
+      const variation = isPositive 
+        ? Math.abs(variationFactor) * 5 // 0% to +5%
+        : -Math.abs(variationFactor) * 5 // -5% to 0%
+      
+      const priceChange = actualPriceChange + variation
+      const trend = priceChange >= 0 ? 'up' : 'down'
+      const adjustedCurrentPrice = basePrice * (1 + priceChange / 100)
   
   // Mock data (would come from API)
   const playerAge = (player as any).age || 25
