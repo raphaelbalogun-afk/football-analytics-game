@@ -49,13 +49,13 @@ export default function PlayerFilters({ players, onFilterChange }: PlayerFilters
         background: 'white',
         border: '1px solid #e0e0e0',
         borderRadius: '8px',
-        padding: '16px',
-        marginBottom: '20px'
+        padding: '20px',
+        marginBottom: '24px'
       }}
     >
-      <h3 style={{ margin: '0 0 16px 0', fontSize: '16px', fontWeight: '600' }}>
-        Filter Players
-      </h3>
+      <div style={{ marginBottom: '16px', fontSize: '14px', fontWeight: '600', color: '#666' }}>
+        Search and Filter
+      </div>
       
       <div
         style={{
@@ -66,66 +66,68 @@ export default function PlayerFilters({ players, onFilterChange }: PlayerFilters
       >
         {/* Search */}
         <div>
-          <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px', color: '#666' }}>
-            Search Player
+          <label style={{ display: 'block', fontSize: '14px', marginBottom: '8px', color: '#333', fontWeight: '500' }}>
+            Search by Name
           </label>
           <input
             type="text"
-            placeholder="Player name..."
+            placeholder="Enter player name..."
             value={filters.search}
             onChange={(e) => handleFilterChange('search', e.target.value)}
             style={{
               width: '100%',
-              padding: '6px 10px',
+              padding: '10px 12px',
               border: '1px solid #ddd',
-              borderRadius: '4px',
+              borderRadius: '6px',
               fontSize: '14px'
             }}
           />
         </div>
 
-        {/* Team Filter */}
-        <div>
-          <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px', color: '#666' }}>
-            Team
-          </label>
-          <select
-            value={filters.team}
-            onChange={(e) => handleFilterChange('team', e.target.value)}
-            style={{
-              width: '100%',
-              padding: '6px 10px',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              fontSize: '14px'
-            }}
-          >
-            <option value="all">All Teams</option>
-            {teams.map(team => (
-              <option key={team} value={team}>{team}</option>
-            ))}
-          </select>
-        </div>
-
         {/* Position Filter */}
         <div>
-          <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px', color: '#666' }}>
-            Position
+          <label style={{ display: 'block', fontSize: '14px', marginBottom: '8px', color: '#333', fontWeight: '500' }}>
+            Filter by Position
           </label>
           <select
             value={filters.position}
             onChange={(e) => handleFilterChange('position', e.target.value)}
             style={{
               width: '100%',
-              padding: '6px 10px',
+              padding: '10px 12px',
               border: '1px solid #ddd',
-              borderRadius: '4px',
-              fontSize: '14px'
+              borderRadius: '6px',
+              fontSize: '14px',
+              background: 'white'
             }}
           >
             <option value="all">All Positions</option>
             {positions.map(pos => (
               <option key={pos} value={pos}>{pos}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Team Filter */}
+        <div>
+          <label style={{ display: 'block', fontSize: '14px', marginBottom: '8px', color: '#333', fontWeight: '500' }}>
+            Filter by Club
+          </label>
+          <select
+            value={filters.team}
+            onChange={(e) => handleFilterChange('team', e.target.value)}
+            style={{
+              width: '100%',
+              padding: '10px 12px',
+              border: '1px solid #ddd',
+              borderRadius: '6px',
+              fontSize: '14px',
+              background: 'white'
+            }}
+          >
+            <option value="all">All Clubs</option>
+            {teams.map(team => (
+              <option key={team} value={team}>{team}</option>
             ))}
           </select>
         </div>

@@ -23,32 +23,29 @@ export default async function MarketPage() {
   const players = await getPlayers()
 
   return (
-    <div className="container">
+    <div style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <DisclaimerBanner />
 
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '20px'
+          maxWidth: '1400px',
+          margin: '0 auto',
+          padding: '24px'
         }}
       >
-        <h1 style={{ margin: 0 }}>Player Market</h1>
-        <Link
-          href="/"
+        <h1
           style={{
-            color: '#0070f3',
-            textDecoration: 'none',
-            fontSize: '14px'
+            margin: '0 0 24px 0',
+            fontSize: '32px',
+            fontWeight: '700',
+            color: '#333'
           }}
         >
-          ← Back to Home
-        </Link>
-      </div>
+          Player Market
+        </h1>
 
-      <PlayerMarketWithFilters initialPlayers={players} />
+        <PlayerMarketWithFilters initialPlayers={players} />
+      </div>
     </div>
   )
 }
-
