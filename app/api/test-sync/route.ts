@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getLeaguePlayers } from '@/lib/api/football-api'
+export const dynamic = 'force-dynamic'
+
 
 /**
  * GET /api/test-sync

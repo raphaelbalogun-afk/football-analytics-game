@@ -46,7 +46,7 @@ export async function syncPlayersFromAPI() {
         console.log(`[Sync] Found ${teams.length} teams`)
         
         for (let i = 0; i < Math.min(teams.length, 5); i++) { // Limit to 5 teams for testing
-          const team = teams[i]
+          const team: any = teams[i]
           const teamId = team?.team?.id || team?.id
           const teamName = team?.team?.name || team?.name || 'Unknown'
           

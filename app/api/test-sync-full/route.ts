@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getLeaguePlayers } from '@/lib/api/football-api'
 import { transformApiPlayerToDB } from '@/lib/api/player-transformer'
 import { createClient } from '@/lib/supabase/server'
+export const dynamic = 'force-dynamic'
+
 
 /**
  * GET /api/test-sync-full

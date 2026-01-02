@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { syncPlayersFromAPI } from '@/lib/api/sync-players'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * POST /api/sync/players
  * 
@@ -47,4 +49,3 @@ export async function POST() {
     )
   }
 }
-

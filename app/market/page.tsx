@@ -3,6 +3,8 @@ import DisclaimerBanner from '@/components/DisclaimerBanner'
 import PlayerMarketWithFilters from '@/components/PlayerMarketWithFilters'
 import type { Player } from '@/types/database'
 
+export const dynamic = 'force-dynamic'
+
 async function getPlayers(): Promise<Player[]> {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/players`, {

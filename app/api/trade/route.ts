@@ -2,46 +2,47 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { calculateBuyPrice, calculateSellPrice, calculateTotalCost } from '@/lib/pricing'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * POST /api/trade
  * 
- * Execute a buy or sell trade for a player
+ * Handles buy/sell trades for player shares
  * 
- * Request body:
- * {
- *   user_id: string (UUID)
- *   player_id: string (UUID)
- *   type: 'buy' | 'sell'
- *   shares: number (positive integer)
- * }
+ * Body:
+ * - user_id: string
+ * - player_id: string (UUID)
+ * - action: 'buy' | 'sell'
+ * - quantity: number
  */
 export async function POST(request: Request) {
   try {
-    const supabase = await createClient()
     const body = await request.json()
+    const { user_id, player_id, action, quantity } = body
     
-    const { user_id, player_id, type, shares } = body
-    
-    // Validation
-    if (!user_id || !player_id || !type || !shares || shares <= 0) {
+    // Validate input
+    if (!user_id || !player_id || !action || !quantity) {
       return NextResponse.json(
-        { 
-          success: false,
-          error: 'Missing required fields: user_id, player_id, type, shares' 
-        },
+        { error: 'Missing required fields' },
         { status: 400 }
       )
     }
     
-    if (type !== 'buy' && type !== 'sell') {
+    if (action !== 'buy' && action !== 'sell') {
       return NextResponse.json(
-        { 
-          success: false,
-          error: 'Invalid trade type. Must be "buy" or "sell"' 
-        },
+        { error: 'Action must be "buy" or "sell"' },
         { status: 400 }
       )
     }
+    
+    if (quantity <= 0 || !Number.isInteger(quantity)) {
+      return NextResponse.json(
+        { error: 'Quantity must be a positive integer' },
+        { status: 400 }
+      )
+    }
+    
+    const supabase = await createClient()
     
     // Get player data
     const { data: player, error: playerError } = await supabase
@@ -52,10 +53,7 @@ export async function POST(request: Request) {
     
     if (playerError || !player) {
       return NextResponse.json(
-        { 
-          success: false,
-          error: 'Player not found' 
-        },
+        { error: 'Player not found' },
         { status: 404 }
       )
     }
@@ -69,219 +67,177 @@ export async function POST(request: Request) {
     
     if (userError || !user) {
       return NextResponse.json(
-        { 
-          success: false,
-          error: 'User not found' 
-        },
+        { error: 'User not found' },
         { status: 404 }
       )
     }
     
-    // Get user portfolio for this player
-    const { data: portfolio } = await supabase
-      .from('portfolios')
-      .select('*')
-      .eq('user_id', user_id)
-      .eq('player_id', player_id)
-      .maybeSingle()
+    // Calculate price and cost
+    const price = action === 'buy' 
+      ? calculateBuyPrice(player.current_price, quantity)
+      : calculateSellPrice(player.current_price, quantity)
     
-    if (type === 'buy') {
-      // Check available shares
-      if (shares > player.available_shares) {
-        return NextResponse.json(
-          { 
-            success: false,
-            error: `Not enough shares available. Available: ${player.available_shares}, Requested: ${shares}` 
-          },
-          { status: 400 }
-        )
-      }
-      
-      // Calculate new price
-      const priceUpdate = calculateBuyPrice(
-        player.current_price,
-        shares,
-        player.total_shares,
-        player.price_cap
-      )
-      
-      const totalCost = calculateTotalCost(shares, priceUpdate.newPrice)
-      
-      // Check user balance (prevent negative balance)
+    const totalCost = calculateTotalCost(price, quantity)
+    
+    // Validate trade
+    if (action === 'buy') {
+      // Check balance
       if (user.virtual_balance < totalCost) {
         return NextResponse.json(
-          { 
-            success: false,
-            error: `Insufficient balance. Required: £${totalCost.toFixed(2)}, Available: £${user.virtual_balance.toFixed(2)}` 
-          },
+          { error: 'Insufficient balance' },
           { status: 400 }
         )
       }
       
-      // Execute trade
-      const { error: tradeError } = await supabase
-        .from('trades')
-        .insert({
-          user_id,
-          player_id,
-          type: 'buy',
-          shares,
-          price_per_share: priceUpdate.newPrice,
-          total_amount: totalCost
-        })
+      // Check available shares
+      if (player.available_shares < quantity) {
+        return NextResponse.json(
+          { error: 'Insufficient shares available' },
+          { status: 400 }
+        )
+      }
+    } else {
+      // Check user has enough shares
+      const { data: portfolio } = await supabase
+        .from('portfolios')
+        .select('quantity')
+        .eq('user_id', user_id)
+        .eq('player_id', player_id)
+        .single()
       
-      if (tradeError) throw tradeError
+      if (!portfolio || portfolio.quantity < quantity) {
+        return NextResponse.json(
+          { error: 'Insufficient shares in portfolio' },
+          { status: 400 }
+        )
+      }
+    }
+    
+    // Execute trade in transaction
+    const { error: tradeError } = await supabase.rpc('execute_trade', {
+      p_user_id: user_id,
+      p_player_id: player_id,
+      p_action: action,
+      p_quantity: quantity,
+      p_price: price,
+      p_total_cost: totalCost
+    })
+    
+    if (tradeError) {
+      // Fallback to manual transaction if RPC doesn't exist
+      console.warn('RPC execute_trade not found, using manual transaction')
       
-      // Update player price and available shares
-      const { error: playerUpdateError } = await supabase
+      // Update user balance
+      const newBalance = action === 'buy'
+        ? user.virtual_balance - totalCost
+        : user.virtual_balance + totalCost
+      
+      const { error: balanceError } = await supabase
+        .from('users')
+        .update({ virtual_balance: newBalance })
+        .eq('id', user_id)
+      
+      if (balanceError) throw balanceError
+      
+      // Update player shares
+      const newAvailableShares = action === 'buy'
+        ? player.available_shares - quantity
+        : player.available_shares + quantity
+      
+      const { error: sharesError } = await supabase
         .from('players')
-        .update({
-          current_price: priceUpdate.newPrice,
-          available_shares: player.available_shares - shares
+        .update({ 
+          available_shares: newAvailableShares,
+          current_price: price,
+          updated_at: new Date().toISOString()
         })
         .eq('id', player_id)
       
-      if (playerUpdateError) throw playerUpdateError
+      if (sharesError) throw sharesError
       
-      // Update user balance
-      const { error: userUpdateError } = await supabase
-        .from('users')
-        .update({
-          virtual_balance: user.virtual_balance - totalCost
-        })
-        .eq('id', user_id)
+      // Update portfolio
+      const { data: existingPortfolio } = await supabase
+        .from('portfolios')
+        .select('quantity')
+        .eq('user_id', user_id)
+        .eq('player_id', player_id)
+        .single()
       
-      if (userUpdateError) throw userUpdateError
-      
-      // Update or create portfolio entry
-      if (portfolio) {
-        const newAveragePrice = (
-          (portfolio.average_buy_price * portfolio.shares + priceUpdate.newPrice * shares) /
-          (portfolio.shares + shares)
-        )
+      if (existingPortfolio) {
+        const newQuantity = action === 'buy'
+          ? existingPortfolio.quantity + quantity
+          : existingPortfolio.quantity - quantity
         
-        const { error: portfolioUpdateError } = await supabase
-          .from('portfolios')
-          .update({
-            shares: portfolio.shares + shares,
-            average_buy_price: newAveragePrice
-          })
-          .eq('id', portfolio.id)
-        
-        if (portfolioUpdateError) throw portfolioUpdateError
-      } else {
-        const { error: portfolioInsertError } = await supabase
+        if (newQuantity > 0) {
+          await supabase
+            .from('portfolios')
+            .update({ quantity: newQuantity })
+            .eq('user_id', user_id)
+            .eq('player_id', player_id)
+        } else {
+          await supabase
+            .from('portfolios')
+            .delete()
+            .eq('user_id', user_id)
+            .eq('player_id', player_id)
+        }
+      } else if (action === 'buy') {
+        await supabase
           .from('portfolios')
           .insert({
             user_id,
             player_id,
-            shares,
-            average_buy_price: priceUpdate.newPrice
+            quantity
           })
-        
-        if (portfolioInsertError) throw portfolioInsertError
       }
       
-      return NextResponse.json({
-        success: true,
-        newPrice: priceUpdate.newPrice,
-        totalCost,
-        updatedBalance: user.virtual_balance - totalCost
-      })
-    } else if (type === 'sell') {
-      // Check user has enough shares
-      if (!portfolio || portfolio.shares < shares) {
-        return NextResponse.json(
-          { 
-            success: false,
-            error: `Not enough shares to sell. Owned: ${portfolio?.shares || 0}, Requested: ${shares}` 
-          },
-          { status: 400 }
-        )
-      }
-      
-      // Calculate new price
-      const priceUpdate = calculateSellPrice(
-        player.current_price,
-        shares,
-        player.total_shares,
-        player.price_floor
-      )
-      
-      const totalRevenue = calculateTotalCost(shares, priceUpdate.newPrice)
-      
-      // Execute trade
-      const { error: tradeError } = await supabase
+      // Record trade
+      await supabase
         .from('trades')
         .insert({
           user_id,
           player_id,
-          type: 'sell',
-          shares,
-          price_per_share: priceUpdate.newPrice,
-          total_amount: totalRevenue
+          action,
+          quantity,
+          price,
+          total_cost: totalCost
         })
-      
-      if (tradeError) throw tradeError
-      
-      // Update player price and available shares
-      const { error: playerUpdateError } = await supabase
-        .from('players')
-        .update({
-          current_price: priceUpdate.newPrice,
-          available_shares: player.available_shares + shares
-        })
-        .eq('id', player_id)
-      
-      if (playerUpdateError) throw playerUpdateError
-      
-      // Update user balance
-      const { error: userUpdateError } = await supabase
-        .from('users')
-        .update({
-          virtual_balance: user.virtual_balance + totalRevenue
-        })
-        .eq('id', user_id)
-      
-      if (userUpdateError) throw userUpdateError
-      
-      // Update portfolio
-      if (portfolio.shares === shares) {
-        // Remove portfolio entry if selling all shares
-        const { error: portfolioDeleteError } = await supabase
-          .from('portfolios')
-          .delete()
-          .eq('id', portfolio.id)
-        
-        if (portfolioDeleteError) throw portfolioDeleteError
-      } else {
-        const { error: portfolioUpdateError } = await supabase
-          .from('portfolios')
-          .update({
-            shares: portfolio.shares - shares
-          })
-          .eq('id', portfolio.id)
-        
-        if (portfolioUpdateError) throw portfolioUpdateError
-      }
-      
-      return NextResponse.json({
-        success: true,
-        newPrice: priceUpdate.newPrice,
-        totalRevenue,
-        updatedBalance: user.virtual_balance + totalRevenue
-      })
     }
+    
+    // Get updated player data
+    const { data: updatedPlayer } = await supabase
+      .from('players')
+      .select('*')
+      .eq('id', player_id)
+      .single()
+    
+    // Get updated user data
+    const { data: updatedUser } = await supabase
+      .from('users')
+      .select('virtual_balance')
+      .eq('id', user_id)
+      .single()
+    
+    return NextResponse.json({
+      success: true,
+      message: `${action === 'buy' ? 'Bought' : 'Sold'} ${quantity} shares of ${player.name}`,
+      player: updatedPlayer,
+      new_balance: updatedUser?.virtual_balance || user.virtual_balance,
+      trade: {
+        action,
+        quantity,
+        price,
+        total_cost: totalCost
+      }
+    })
   } catch (error: any) {
     console.error('Trade error:', error)
     return NextResponse.json(
       { 
-        success: false,
-        error: 'Failed to execute trade',
+        error: 'Trade failed',
         message: error.message || 'Unknown error'
       },
       { status: 500 }
     )
   }
 }
-

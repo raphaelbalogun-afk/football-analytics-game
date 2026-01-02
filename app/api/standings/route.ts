@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getStandings } from '@/lib/api/football-api'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/standings
  * 
@@ -36,4 +38,3 @@ export async function GET(request: Request) {
     )
   }
 }
-

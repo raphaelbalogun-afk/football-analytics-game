@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import DisclaimerBanner from '@/components/DisclaimerBanner'
-import LeagueFilters from '@/components/LeagueFilters'
 import StandingsTable from '@/components/StandingsTable'
+
+export const dynamic = 'force-dynamic'
 
 export default function StandingsPage() {
   return (
@@ -28,10 +29,6 @@ export default function StandingsPage() {
           ← Back to Home
         </Link>
       </div>
-
-      <LeagueFilters onFilterChange={(leagueId, season) => {
-        // Filter change handled by StandingsTable component
-      }} />
 
       <StandingsTable />
     </div>

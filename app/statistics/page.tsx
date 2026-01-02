@@ -2,6 +2,8 @@ import Link from 'next/link'
 import DisclaimerBanner from '@/components/DisclaimerBanner'
 import StatisticsTable from '@/components/StatisticsTable'
 
+export const dynamic = 'force-dynamic'
+
 export default function StatisticsPage() {
   return (
     <div className="container">

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getPlayerStats, getTeamPlayerStats } from '@/lib/api/football-api'
 import { getPlayerStatsSummary } from '@/lib/api/player-transformer'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/players/stats
  * 
@@ -22,7 +24,7 @@ export async function GET(request: Request) {
     if (playerId) {
       // Get specific player stats
       const stats = await getPlayerStats(parseInt(playerId), season)
-      const summaries = stats.map(stat => getPlayerStatsSummary(stat))
+      const summaries = stats.map((stat: any) => getPlayerStatsSummary(stat))
       
       return NextResponse.json({
         success: true,
@@ -32,7 +34,7 @@ export async function GET(request: Request) {
     } else if (teamId) {
       // Get all team player stats
       const stats = await getTeamPlayerStats(parseInt(teamId), season)
-      const summaries = stats.map(stat => getPlayerStatsSummary(stat))
+      const summaries = stats.map((stat: any) => getPlayerStatsSummary(stat))
       
       return NextResponse.json({
         success: true,
@@ -61,4 +63,3 @@ export async function GET(request: Request) {
     )
   }
 }
-

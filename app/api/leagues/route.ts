@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getLeagues } from '@/lib/api/football-api'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/leagues
  * 
@@ -27,4 +29,3 @@ export async function GET() {
     )
   }
 }
-
