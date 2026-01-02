@@ -24,28 +24,32 @@ export default function PlayerMarketWithFilters({ initialPlayers }: PlayerMarket
   })
 
   const filteredPlayers = useMemo(() => {
+    if (!initialPlayers || initialPlayers.length === 0) return []
+    
     return initialPlayers.filter(player => {
+      if (!player) return false
+      
       // Team filter
-      if (filters.team !== 'all' && player.team !== filters.team) {
+      if (filters.team && filters.team !== 'all' && player.team !== filters.team) {
         return false
       }
 
       // Position filter
-      if (filters.position !== 'all' && player.position !== filters.position) {
+      if (filters.position && filters.position !== 'all' && player.position !== filters.position) {
         return false
       }
 
       // Search filter
-      if (filters.search && !player.name.toLowerCase().includes(filters.search.toLowerCase())) {
+      if (filters.search && player.name && !player.name.toLowerCase().includes(filters.search.toLowerCase())) {
         return false
       }
 
       // Price filters
-      if (filters.minPrice && player.current_price < parseFloat(filters.minPrice)) {
+      if (filters.minPrice && player.current_price && player.current_price < parseFloat(filters.minPrice)) {
         return false
       }
 
-      if (filters.maxPrice && player.current_price > parseFloat(filters.maxPrice)) {
+      if (filters.maxPrice && player.current_price && player.current_price > parseFloat(filters.maxPrice)) {
         return false
       }
 

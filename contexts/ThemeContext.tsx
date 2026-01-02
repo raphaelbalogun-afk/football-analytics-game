@@ -17,9 +17,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
+    if (mounted) return // Prevent re-running if already mounted
     
     try {
-      setMounted(true)
       // Check localStorage for saved theme preference
       let initialTheme: Theme = 'light'
       
@@ -44,12 +44,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       }
       
       setTheme(initialTheme)
+      setMounted(true)
     } catch (error) {
       console.error('Error initializing theme:', error)
-      setMounted(true)
       setTheme('light')
+      setMounted(true)
     }
-  }, [])
+  }, [mounted])
 
   useEffect(() => {
     if (!mounted || typeof window === 'undefined') return
