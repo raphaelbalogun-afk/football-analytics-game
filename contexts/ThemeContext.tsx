@@ -16,22 +16,55 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-    // Check localStorage for saved theme preference
-    const savedTheme = localStorage.getItem('theme') as Theme | null
-    if (savedTheme) {
-      setTheme(savedTheme)
-    } else {
-      // Check system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      setTheme(prefersDark ? 'dark' : 'light')
+    if (typeof window === 'undefined') return
+    
+    try {
+      setMounted(true)
+      // Check localStorage for saved theme preference
+      let initialTheme: Theme = 'light'
+      
+      try {
+        const savedTheme = localStorage.getItem('theme') as Theme | null
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+          initialTheme = savedTheme
+        } else {
+          // Check system preference
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+          initialTheme = prefersDark ? 'dark' : 'light'
+        }
+      } catch (storageError) {
+        // localStorage might not be available, use system preference
+        try {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+          initialTheme = prefersDark ? 'dark' : 'light'
+        } catch (mediaError) {
+          // Fallback to light
+          initialTheme = 'light'
+        }
+      }
+      
+      setTheme(initialTheme)
+    } catch (error) {
+      console.error('Error initializing theme:', error)
+      setMounted(true)
+      setTheme('light')
     }
   }, [])
 
   useEffect(() => {
-    if (mounted) {
+    if (!mounted || typeof window === 'undefined') return
+    
+    try {
       localStorage.setItem('theme', theme)
-      document.documentElement.setAttribute('data-theme', theme)
+      if (document && document.documentElement) {
+        document.documentElement.setAttribute('data-theme', theme)
+      }
+    } catch (error) {
+      console.error('Error saving theme:', error)
+      // Still try to set the attribute even if localStorage fails
+      if (document && document.documentElement) {
+        document.documentElement.setAttribute('data-theme', theme)
+      }
     }
   }, [theme, mounted])
 

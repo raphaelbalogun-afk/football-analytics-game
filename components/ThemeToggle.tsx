@@ -15,27 +15,43 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     // Only run on client side
-    if (typeof window === 'undefined') return
-    
-    setMounted(true)
+    if (typeof window === 'undefined') {
+      return
+    }
     
     try {
+      setMounted(true)
+      
       // Get initial theme from localStorage or system preference
-      const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
-      if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
-        setTheme(savedTheme)
-        document.documentElement.setAttribute('data-theme', savedTheme)
-      } else {
+      let initialTheme: 'light' | 'dark' = 'light'
+      
+      try {
+        const savedTheme = localStorage.getItem('theme')
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+          initialTheme = savedTheme
+        } else {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+          initialTheme = prefersDark ? 'dark' : 'light'
+        }
+      } catch (storageError) {
+        // localStorage might not be available
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-        const initialTheme = prefersDark ? 'dark' : 'light'
-        setTheme(initialTheme)
+        initialTheme = prefersDark ? 'dark' : 'light'
+      }
+      
+      setTheme(initialTheme)
+      
+      // Safely set theme attribute
+      if (document && document.documentElement) {
         document.documentElement.setAttribute('data-theme', initialTheme)
       }
     } catch (error) {
       // Fallback to light theme if there's any error
       console.error('Error loading theme:', error)
       setTheme('light')
-      document.documentElement.setAttribute('data-theme', 'light')
+      if (document && document.documentElement) {
+        document.documentElement.setAttribute('data-theme', 'light')
+      }
     }
   }, [])
 
@@ -43,9 +59,17 @@ export default function ThemeToggle() {
     try {
       const newTheme = theme === 'light' ? 'dark' : 'light'
       setTheme(newTheme)
+      
       if (typeof window !== 'undefined') {
-        localStorage.setItem('theme', newTheme)
-        document.documentElement.setAttribute('data-theme', newTheme)
+        try {
+          localStorage.setItem('theme', newTheme)
+        } catch (storageError) {
+          console.warn('Could not save theme to localStorage:', storageError)
+        }
+        
+        if (document && document.documentElement) {
+          document.documentElement.setAttribute('data-theme', newTheme)
+        }
       }
     } catch (error) {
       console.error('Error toggling theme:', error)
